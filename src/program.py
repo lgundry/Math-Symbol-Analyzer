@@ -1,11 +1,19 @@
 import os
 import numpy as np
+import pickle
+import json
 from PIL import Image
 from pathlib import Path
 import matplotlib.pyplot as plt
 
 def main():
     db, labels = loadFromDir("data/extracted_images")
+
+    save_np_array(db)
+    save_array(labels, "labels.plk")
+
+    # for testing purposes:
+    save_readable(db, labels)
 
 # generate a 2 dimensional numpy array (matrix). Each column is an individual image, where each row is a particular feature. The final row of each column contains an identifier and should not be used in the network
 def loadFromDir(path):
@@ -38,5 +46,22 @@ def loadFromDir(path):
 
 def load_from_file(path):
     return np.load(path)
+
+def save_array(array, filename):
+    with open(filename, 'wb') as file:
+        pickle.dump(array, file)
+
+def save_np_array(np_array):
+    np.save("database", np_array)
+
+def load_array(filename):
+    with open(filename, 'rb') as file:
+        array = pickle.load(file)
+    return array
+
+def save_readable(np_array, array):
+    np.savetxt("database_readable.txt", np_array)
+    with open("labels_readable.txt", 'w') as file:
+        json.dump(array, file)
 
 main()
