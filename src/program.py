@@ -7,13 +7,20 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 def main():
-    db, labels = loadFromDir("data/extracted_images")
+    # Toggle between generating or loading the database and labels
+    regenerate_db = False
 
-    save_np_array(db)
-    save_array(labels, "labels.plk")
+    if regenerate_db:
+        db, labels = loadFromDir("data/extracted_images")
+        save_np_array(db, "database.npy")
+        save_array(labels, "labels.pkl")
+    else:
+        db = load_np_array("database.npy")
+        labels = load_array("labels.pkl")
 
-    # for testing purposes:
-    save_readable(db, labels)
+    # Validate the database
+    validateDB(db, labels, "data/extracted_images")
+
 
 # generate a 2 dimensional numpy array (matrix). Each column is an individual image, where each row is a particular feature. The final row of each column contains an identifier and should not be used in the network
 def loadFromDir(path):
@@ -43,8 +50,23 @@ def loadFromDir(path):
 
     return db, labels
         
+def validateDB(db, labels, path):
+    file_index = 0
+    directory_index = 0
+    for directory in os.listdir(path):
+        directory_path = os.path.join(path, directory)
+        for file in os.listdir(directory_path):
+            file_path = os.path.join(directory_path, file)
+            image_array = np.asarray(Image.open(file_path)).flatten()
+            assert np.array_equal(db[:-1, file_index], image_array), \
+                f"Data mismatch for file: {file_path}"
+            
+            assert labels[int(db[-1, file_index])] == directory
+            file_index += 1
+        directory_index += 1
+        
 
-def load_from_file(path):
+def load_np_array(path):
     return np.load(path)
 
 def save_array(array, filename):
