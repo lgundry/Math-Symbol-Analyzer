@@ -2,114 +2,112 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class EncoderDecoderNetwork:
-    def __init__(self, input_size, bottleneck_size, hidden_sizes, num_labels):
-        # Initialize weights for encoder layers
-        self.encoder_weights = []
-        layer_sizes = [input_size] + hidden_sizes + [bottleneck_size]
-        for i in range(len(layer_sizes) - 1):
-            self.encoder_weights.append(self.init_weights(layer_sizes[i], layer_sizes[i + 1]))
-        
-        # Initialize weights for decoder layers
-        self.decoder_weights = []
-        decoder_layer_sizes = [bottleneck_size] + hidden_sizes[::-1] + [input_size]
-        for i in range(len(decoder_layer_sizes) - 1):
-            self.decoder_weights.append(self.init_weights(decoder_layer_sizes[i], decoder_layer_sizes[i + 1]))
-        
-        # Initialize weights for label prediction layer
-        self.label_weights = self.init_weights(bottleneck_size, num_labels)
+    def __init__(self, input_size, hidden_size, encoded_size, output_size, softmax_size):
+        # input first_hidden encoded second_hidden output
+        # 2025    45, 7, 45,   2026
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.encoded_size = encoded_size
+        self.output_size = output_size
+        self.softmax_size = softmax_size
 
-    
-    def init_weights(self, input_size, output_size):
-        # Xavier initialization for weights
-        limit = np.sqrt(6 / (input_size + output_size))
-        return np.random.uniform(-limit, limit, (output_size, input_size))
-    
+        # initialize weights
+        self.weights_input_hidden = np.random.randn(self.input_size, self.hidden_size)
+        self.weights_hidden_encoded = np.random.randn(self.hidden_size, self.encoded_size)
+        self.weights_encoded_hidden = np.random.randn(self.encoded_size, self.hidden_size)
+        self.weights_encoded_softmax = np.random.randn(self.encoded_size, self.softmax_size)
+        self.weights_hidden_output = np.random.randn(self.hidden_size, self.output_size)
+
+        #initialize biases
+        self.bias_first_hidden = np.zeros((1, self.hidden_size))
+        self.bias_encoded = np.zeros((1, self.encoded_size))
+        self.bias_second_hidden = np.zeros((1, self.hidden_size))
+        self.bias_output = np.zeros((1, self.output_size))
+        self.bias_softmax = np.zeros((1, self.softmax_size))
+
+    def forward(self, X):
+        # Input to First Hidden Layer
+        self.first_hidden_layer_input = np.dot(X, self.weights_input_hidden) + self.bias_first_hidden
+        self.first_hidden_layer_output = self.sigmoid(self.first_hidden_layer_input)
+
+        # First Hidden Layer to encoded Layer
+        self.encoded_layer_input = np.dot(self.first_hidden_layer_output, self.weights_hidden_encoded) + self.bias_encoded
+        self.encoded_layer_output = self.sigmoid(self.encoded_layer_input)
+
+        # Encoded Layer to Second Hidden Layer
+        self.second_hidden_layer_input = np.dot(self.encoded_layer_output, self.weights_encoded_hidden) + self.bias_second_hidden
+        self.second_hidden_layer_output = self.sigmoid(self.second_hidden_layer_input)
+        
+        # Second Hidden Layer to Image Output (Reconstruction)
+        self.output_layer_input = np.dot(self.second_hidden_layer_output, self.weights_hidden_output) + self.bias_output
+        self.image_output = self.sigmoid(self.output_layer_input)
+
+        # Encoded layer to Softmax Output (Label Prediction)
+        self.softmax_layer_input = np.dot(self.encoded_layer_output, self.weights_encoded_softmax) + self.bias_softmax
+        self.softmax_output = self.softmax(self.softmax_layer_input)
+        
+        return self.image_output, self.softmax_output
+
+    def backward(self, X, y, learning_rate):
+        # Calculate the error
+        image_output_error = y - self.image_output
+        image_output_delta = image_output_error * self.sigmoid_derivative(self.image_output)
+
+        softmax_output_error = self.softmax_output - y
+        softmax_output_delta = softmax_output_error
+        
+        first_hidden_error = image_output_delta.dot(self.weights_hidden_output.T)
+        first_hidden_delta = first_hidden_error * self.sigmoid_derivative(self.first_hidden_layer_output)
+
+        second_hidden_error = first_hidden_delta.dot(self.weights_encoded_hidden.T)
+        second_hidden_delta = second_hidden_error * self.sigmoid_derivative(self.second_hidden_layer_output)
+        
+        # Update weights and biases
+        self.weights_hidden_output += self.second_hidden_layer_output.T.dot(image_output_delta) * learning_rate
+        self.bias_output += np.sum(image_output_delta, axis=0, keepdims=True) * learning_rate
+
+        self.weights_encoded_softmax += self.encoded_layer_output.T.dot(softmax_output_delta) * learning_rate
+        self.bias_softmax += np.sum(softmax_output_delta, axis=0, keepdims=True) * learning_rate
+        
+        self.weights_encoded_hidden += self.first_hidden_layer_output.T.dot(second_hidden_delta) * learning_rate
+        self.bias_second_hidden += np.sum(second_hidden_delta, axis=0, keepdims=True) * learning_rate
+
+        self.weights_input_hidden += X.T.dot(first_hidden_delta) * learning_rate
+        self.bias_first_hidden += np.sum(first_hidden_delta, axis=0, keepdims=True) * learning_rate
+
+    def train(self, X, y_image, y_label, epochs, learning_rate):
+        for epoch in range(epochs):
+            # Perform a forward pass (for all samples at once)
+            image_output, softmax_output = self.forward(X)
+            
+            # Calculate loss for the image reconstruction (Mean Squared Error)
+            image_loss = np.mean(np.square(y_image - image_output))  # Compare image outputs to true images
+            
+            # Calculate loss for the label prediction (Mean Squared Error)
+            label_loss = np.mean(np.square(y_label - softmax_output))  # Compare label predictions to true labels
+            
+            # Combine both losses (you can adjust the weights of each task here if needed)
+            total_loss = image_loss + label_loss
+            
+            # Perform a backward pass to update the weights and biases
+            self.backward(X, y_image, y_label, learning_rate)
+            
+            if epoch % 1000 == 0:
+                print(f'Epoch {epoch}, Total Loss: {total_loss}, Image Loss: {image_loss}, Label Loss: {label_loss}')
+
+
     def sigmoid(self, x):
         return 1 / (1 + np.exp(-x))
+
+    def sigmoid_derivative(self, x):
+        return x * (1 - x)
+
+    def relu(self, x):
+        return np.maximum(0, x)
+
+    def relu_derivative(self, x):
+        return np.where(x > 0, 1, 0)
     
     def softmax(self, x):
-        exp_x = np.exp(x - np.max(x))
-        return exp_x / np.sum(exp_x, axis=0)
-    
-    def forward(self, x):
-        # Encoder: Compress the input
-        bottleneck = self.sigmoid(self.encoder_weights @ x)
-        
-        # Decoder: Reconstruct the continuous features
-        reconstructed_features = self.sigmoid(self.decoder_weights @ bottleneck)
-        
-        # Predict the label
-        label_logits = self.label_weights @ bottleneck
-        predicted_label = self.softmax(label_logits)
-        
-        return reconstructed_features, predicted_label
-    
-    def compute_loss(self, x, y, label, alpha=1.0, beta=1.0):
-        # Forward pass
-        reconstructed_features, predicted_label = self.forward(x)
-        
-        # MSE Loss for features
-        mse_loss = np.mean((reconstructed_features - x) ** 2)
-        
-        # CrossEntropy Loss for labels
-        true_label_one_hot = np.zeros(predicted_label.shape)
-        true_label_one_hot[label] = 1
-        cross_entropy_loss = -np.sum(true_label_one_hot * np.log(predicted_label))
-        
-        # Total loss
-        total_loss = alpha * mse_loss + beta * cross_entropy_loss
-        return total_loss
-
-    def train(self, data, labels, learning_rate=0.01, epochs=100):
-        # Store metrics for graphing
-        reconstruction_losses = []
-        classification_losses = []
-        total_losses = []
-
-        for epoch in range(epochs):
-            total_loss = 0
-            reconstruction_loss = 0
-            classification_loss = 0
-
-            for x, label in zip(data, labels):
-                reconstructed, predicted_label = self.forward(x)
-                target = np.zeros(len(self.label_weights))
-                target[label] = 1
-                
-                # Compute reconstruction loss (e.g., Mean Squared Error)
-                reconstruction_loss += np.mean((reconstructed - x) ** 2)
-                
-                # Compute classification loss (e.g., Cross-Entropy)
-                classification_loss += -np.sum(target * np.log(predicted_label + 1e-10))
-                
-                # Backpropagate and update weights
-                self.backward(x, label, reconstructed, predicted_label, learning_rate)
-
-            # Average the losses
-            total_loss = reconstruction_loss + classification_loss
-            reconstruction_losses.append(reconstruction_loss / len(data))
-            classification_losses.append(classification_loss / len(data))
-            total_losses.append(total_loss / len(data))
-
-            print(f"Epoch {epoch + 1}/{epochs} - Reconstruction Loss: {reconstruction_losses[-1]:.4f}, "
-                  f"Classification Loss: {classification_losses[-1]:.4f}, "
-                  f"Total Loss: {total_losses[-1]:.4f}")
-
-        # Plot the metrics
-        self.plot_metrics(reconstruction_losses, classification_losses, total_losses)
-
-    def plot_metrics(self, reconstruction_losses, classification_losses, total_losses, save_path=None):
-        plt.figure(figsize=(10, 6))
-        plt.plot(reconstruction_losses, label='Reconstruction Loss', color='blue')
-        plt.plot(classification_losses, label='Classification Loss', color='orange')
-        plt.plot(total_losses, label='Total Loss', color='green')
-        plt.xlabel('Epochs')
-        plt.ylabel('Loss')
-        plt.title('Training Losses Over Time')
-        plt.legend()
-        plt.grid(True)
-        
-        if save_path:
-            plt.savefig(save_path)
-        else:
-            plt.show()
+        e_x = np.exp(x - np.max(x))
+        return e_x / e_x.sum()
