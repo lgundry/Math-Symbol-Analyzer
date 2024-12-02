@@ -14,12 +14,19 @@ def validateDB(db, labels, path):
         if os.path.isdir(directory_path):  # Skip non-directory files
             for file in os.listdir(directory_path):
                 file_path = os.path.join(directory_path, file)
+                
                 # Load and flatten the image
                 image_array = np.asarray(Image.open(file_path)).flatten()
+                
                 # Check if the image data matches the database
-                assert np.array_equal(db[:-1, file_index], image_array), \
+                assert np.array_equal(db[file_index, :-1], image_array), \
                     f"Data mismatch for file: {file_path}"
+                
                 # Check if the label matches the directory
-                assert labels[int(db[-1, file_index])] == directory, \
+                assert labels[int(db[file_index, -1])] == directory, \
                     f"Label mismatch for file: {file_path}"
+                
                 file_index += 1
+
+    print("Validation successful! Database matches original images and labels.")
+

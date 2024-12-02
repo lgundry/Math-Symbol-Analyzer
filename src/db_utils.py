@@ -6,35 +6,33 @@ import pickle
 def loadFromDir(path):
     """
     Generates a database from a directory of images.
-    Each column in the database corresponds to a flattened image.
-    The last row of each column contains the directory index as a label.
+    Each row in the database corresponds to a flattened image.
+    The last column of each row contains the directory index as a label.
     """
     # Count the number of files and directories in the given path
-    num_files = 0
-    num_dirs = 0
-    for root, dirs, files in os.walk(path):
-        num_files += len(files)
-        num_dirs += len(dirs)
+    num_files = sum(len(files) for _, _, files in os.walk(path))
+    num_dirs = sum(len(dirs) for _, dirs, _ in os.walk(path))
 
     # Initialize the database and labels
-    db = np.zeros((2026, num_files))
+    db = np.zeros((num_files, 2026))  # Each row: 2025 pixels + 1 label
     labels = [""] * num_dirs
 
     directory_index = 0
     file_index = 0
     for directory in os.listdir(path):
         directory_path = os.path.join(path, directory)
-        if os.path.isdir(directory_path):  # Skip non-directory files
+        if os.path.isdir(directory_path):
             labels[directory_index] = directory
             for file in os.listdir(directory_path):
                 file_path = os.path.join(directory_path, file)
                 image_array = np.asarray(Image.open(file_path)).flatten()
-                db[:-1, file_index] = image_array
-                db[-1, file_index] = directory_index
+                db[file_index, :-1] = image_array  # Image data (2025 elements)
+                db[file_index, -1] = directory_index  # Label (last element)
                 file_index += 1
             directory_index += 1
 
     return db, labels
+
 
 def save_np_array(np_array, filename="database.npy"):
     """Saves a numpy array to a file."""
