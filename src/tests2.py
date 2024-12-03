@@ -1,5 +1,5 @@
 import numpy as np
-from neural_network_sigmoid import EncoderDecoderNetwork
+from repo.src.fully_functioning.neural_network_sigmoid import EncoderDecoderNetwork
 
 # Define the dimensions of the network
 input_size = 45 * 45  # For example, 45x45 image flattened

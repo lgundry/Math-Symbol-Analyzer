@@ -1,9 +1,9 @@
 import numpy as np
 from PIL import Image
-from repo.src.fully_functioning.db_utils import loadFromDir, save_np_array, load_np_array, save_array, load_array
-from repo.src.fully_functioning.db_validation import validateDB
-from repo.src.fully_functioning.neural_network_relu import EncoderDecoderNetwork
-from repo.src.fully_functioning.tests import main as testDB
+from db_utils import loadFromDir, save_np_array, load_np_array, save_array, load_array
+from db_validation import validateDB
+from image_only import EncoderDecoderNetwork
+from tests import main as testDB
 
 def main():
     # Toggle between generating or loading the database and labels
@@ -36,8 +36,8 @@ def main():
         input_size = db.shape[1] - 1
         output_size = input_size
         softmax_size = label_count
-        hidden_size = 256
-        encoded_size = 64
+        hidden_size = 512
+        encoded_size = 128
 
         shuffled_db = np.random.permutation(db)
 
@@ -45,13 +45,13 @@ def main():
         valid = shuffled_db[int(0.9 * db_row_count):int(0.95 * db_row_count), :]
         test = shuffled_db[int(0.95 * db_row_count):, :]
 
-        network = EncoderDecoderNetwork(input_size, hidden_size, encoded_size, output_size, softmax_size)
-        image_output, softmax_output = network.forward(db[0, :-1])
+        network = EncoderDecoderNetwork(input_size, hidden_size, encoded_size, output_size)
+        image_output = network.forward(db[0, :-1])
 
         # Test the backward pass and training
         epochs = db_column_count                                                                     
-        learning_rate = .00000001
-        cycles = 1000000
+        learning_rate = .001
+        cycles = 1000
 
         for cycle in range(cycles):
             print("cycle: " +  str(cycle))
@@ -69,11 +69,51 @@ def main():
                 input_image = train[index, :-1]  # Get the flattened image data (excluding the label)
 
                 # Train the network on this single image
-                total_loss, image_loss, label_loss = network.train(input_image, target_image_as_array, one_hot_labels[label_index], learning_rate)
+                image_loss, output_image = network.train(input_image, target_image_as_array, learning_rate)
                 
                 if (index % 100 == 0):
                     print("epoch " + str(index))
-                    print(f'Total Loss: {total_loss}, Image Loss: {image_loss}, Label Loss: {label_loss}')
+                    print(f'Loss: {image_loss}')
+
+                    if ((cycle > 1 and index > 1) and (index * cycle) % 10000 == 0):
+                        print(labels[label_index])
+                        display_image_normalized(output_image, 45, 45)
+
+from PIL import Image
+import numpy as np
+
+def display_image_normalized(image_output, width, height):
+    """
+    Normalizes and converts a flattened NumPy array into a displayable image.
+    
+    Args:
+        image_output (np.ndarray): Flattened 1D array of the image output.
+        width (int): Width of the image.
+        height (int): Height of the image.
+    """
+    # Reshape the output into the original dimensions
+    reshaped_image = image_output.reshape((height, width))
+    
+    # Normalize the image to fit in the range [0, 255]
+    min_val = reshaped_image.min()
+    max_val = reshaped_image.max()
+    if max_val > min_val:
+        normalized_image = ((reshaped_image - min_val) / (max_val - min_val) * 255).astype(np.uint8)
+    else:
+        normalized_image = np.clip(reshaped_image, 0, 255).astype(np.uint8)
+    
+    # Convert to a PIL Image
+    pil_image = Image.fromarray(normalized_image, mode='L')
+    
+    # Save the image in case `show()` doesn't work
+    pil_image.save("output_image.png")
+    print("Image saved as 'output_image.png'.")
+    
+    # Display the image
+    pil_image.show()  # This uses the default image viewer on your system
+
+    # Pause the script until the user closes the viewer
+    input("Press Enter after viewing the image...")
 
 if __name__ == "__main__":
     main()
