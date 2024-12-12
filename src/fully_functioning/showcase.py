@@ -56,7 +56,7 @@ class Showcase:
         window.mainloop()
 
     def browseFiles(self):
-        self.filename = filedialog.askopenfilename(initialdir = "~", title = "Select a File", filetypes = (("Image files", "*.jpg*"), ("all files", "*.*")))
+        self.filename = filedialog.askopenfilename(initialdir = os.getcwd(), title = "Select a File", filetypes = (("Image files", "*.jpg*"), ("all files", "*.*")))
         # Change label contents
         self.label_file_explorer.configure(text=f"Selected {self.filename} for processing")
         self.open_image()
