@@ -1,9 +1,11 @@
 import numpy as np
+import time
 import matplotlib.pyplot as plt
 from PIL import Image
 from db_utils import loadFromDir, save_np_array, load_np_array, save_array, load_array
 from db_validation import validateDB
-from translator_network import EncoderDecoderNetwork
+from categorizor_network import EncoderDecoderNetwork
+
 
 def main():
     # Toggle between generating or loading the database and labels
@@ -26,9 +28,12 @@ def main():
     db_column_count = db_dims[1]
 
     label_count = len(labels)
+    one_hot_labels = np.eye(label_count, dtype=int)
 
     input_size = db.shape[1] - 1
     output_size = input_size
+    softmax_size = label_count
+    softmax_hidden_size = 73
     hidden_size = 256
     encoded_size = 64
 
@@ -39,13 +44,14 @@ def main():
     test = shuffled_db[int(0.95 * db_row_count) :, :]
 
     # Initialize the network
-    network = EncoderDecoderNetwork(input_size, hidden_size, encoded_size, output_size)
-    output_image = network.forward(db[0, :-1])
+    network = EncoderDecoderNetwork(input_size, hidden_size, encoded_size, output_size, softmax_hidden_size, softmax_size)
+    network.load("encoder_decoder2.npz")
+    output_image, label_output, encoded_layer_output = network.forward(db[0, :-1])
 
     # Variables for different training loop parameters
     cycles = train.shape[0]
     learning_rate = 0.0001
-    epochs = 20
+    epochs = 3
     # List to tracking
     loss_history = [] 
     cumulative_loss = 0
@@ -57,44 +63,41 @@ def main():
 
             # Grab the image label and use it to open the target image
             label_index = int(train[index, -1])
-            target_image_path = "definitions/" + labels[label_index] + ".jpg"
-            target_image = Image.open(target_image_path).convert("L")
-            target_image_as_array = np.asarray(target_image).flatten()
+            target_label = one_hot_labels[label_index].reshape((1, label_count))
 
             input_image = train[index, :-1]
 
             # Train the network on the input image
-            image_loss, output_image = network.train(
-                input_image, target_image_as_array, learning_rate
-            )
+            label_loss, output_image, output_label = network.train(input_image, target_label, learning_rate)
 
-            cumulative_loss += image_loss
+            cumulative_loss += label_loss
             avg_loss = cumulative_loss / ((epoch * cycles) + (index + 1))
             loss_history.append(avg_loss)
 
             if index % 100 == 0:
                 print(f"Cycle {index}, Epoch {epoch}")
-                print(f"Loss: {image_loss}")
+                print(f"Loss: {label_loss}")
                 print(f"Average Loss: {avg_loss}")
 
         # Validation loop - if loss is high compared to training, the network is not generalizing properly
         val_loss = 0
         for validation_cycle in range(valid.shape[0]):
             val_label_index = int(valid[validation_cycle, -1])
-            target_image_path = "definitions/" + labels[val_label_index] + ".jpg"
-            target_image = Image.open(target_image_path).convert("L")
-            target_image_as_array = np.asarray(target_image).flatten()
-            input_image = valid[validation_cycle, :-1]  # Get the flattened image data (excluding the label)
-            target_image_normalized = target_image_as_array / 255
+            target_label = one_hot_labels[val_label_index].reshape(1, label_count)
+            input_image = valid[validation_cycle, :-1]
 
-            output_image = network.forward(input_image)
-            val_image_loss = compute_loss(output_image, target_image_normalized)
-            val_loss += val_image_loss
+            output_image, softmax_output, encoded_layer_output = network.forward(input_image)
+            val_label_loss = compute_loss(target_label, softmax_output)
+            val_loss += val_label_loss
 
         avg_val_loss = val_loss / valid.shape[0]
         val_loss_history.append(avg_val_loss)
+        
+        print("target label: " + labels[np.argmax(target_label)])
+        print("output label: " + labels[np.argmax(softmax_output)])
         display_image_normalized(output_image, 45, 45, "image_output.jpg")
         display_image_normalized(input_image / 255, 45, 45, "image_input.jpg")
+        time.sleep(2.5)
 
         print(
             f"Epoch {epoch + 1}: Training Loss = {avg_loss:.4f}, Validation Loss = {avg_val_loss:.4f}"
@@ -118,7 +121,7 @@ def main():
     plt.savefig("final_loss_graph.png")
     plt.close()
     
-    network.save("encoder_decoder2.npz")
+    network.save("encoder_decoder3.npz")
 
 
 def display_image_normalized(image_output, width, height, filename):
@@ -129,8 +132,9 @@ def display_image_normalized(image_output, width, height, filename):
     print(f"Image saved as '{filename}'.")
 
 
-def compute_loss(output, target):
-    return np.mean((output - target) ** 2)
+def compute_loss(target, output):
+    output = np.clip(output, 1e-10, 1 - 1e-10)
+    return -np.sum(target * np.log(output)) / target.shape[0]
 
 
 if __name__ == "__main__":
