@@ -1,0 +1,2 @@
+Character: 1
+Description: The digit one represents the multiplicative identity in mathematics. It is the number that, when multiplied by any other number, leaves the number unchanged.

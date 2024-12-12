@@ -1,0 +1,2 @@
+Character: N
+Description: The letter 'N' typically represents the set of natural numbers, which includes all positive integers starting from 1.

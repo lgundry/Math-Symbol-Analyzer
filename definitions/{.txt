@@ -1,0 +1,2 @@
+Character: {
+Description: The left curly brace is used in set notation to enclose elements of a set.

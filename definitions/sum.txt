@@ -1,0 +1,2 @@
+Character: sum
+Description: The sum symbol (∑) represents the addition of a sequence of numbers, often used in series and summations.

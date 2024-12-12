@@ -1,0 +1,2 @@
+Character: neq
+Description: The 'neq' symbol (≠) indicates that two quantities are not equal.

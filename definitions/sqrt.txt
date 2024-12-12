@@ -1,0 +1,2 @@
+Character: sqrt
+Description: Sqrt (square root) is the operation that finds a number that, when squared, gives the original number.

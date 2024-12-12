@@ -1,0 +1,2 @@
+Character: u
+Description: The letter 'u' is often used as a variable in mathematics, representing a function, sequence, or other quantity.

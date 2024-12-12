@@ -1,0 +1,2 @@
+Character: e
+Description: The letter 'e' represents Euler's number, approximately 2.718, which is the base of the natural logarithm and plays a crucial role in calculus.

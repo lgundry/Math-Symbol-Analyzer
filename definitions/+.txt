@@ -1,0 +1,2 @@
+Character: +
+Description: The plus sign is used to represent addition in mathematics. It is a binary operator used to combine two numbers into their sum.

@@ -1,0 +1,2 @@
+Character: i
+Description: The letter 'i' represents the imaginary unit in complex numbers, where i^2 = -1.

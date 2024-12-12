@@ -1,0 +1,2 @@
+Character: forward_slash
+Description: The forward slash (/) is used for division, indicating the division of one quantity by another.

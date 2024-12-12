@@ -1,0 +1,2 @@
+Character: [
+Description: The left square bracket is often used to denote intervals, or as part of the notation for lists, matrices, or vectors.

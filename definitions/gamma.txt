@@ -1,0 +1,2 @@
+Character: gamma
+Description: Gamma (γ) is often used to represent certain constants, angles in geometry, or the gamma function in calculus.

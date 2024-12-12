@@ -1,0 +1,2 @@
+Character: H
+Description: The letter 'H' can represent the Hamiltonian operator in physics or a Hilbert space in functional analysis.

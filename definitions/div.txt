@@ -1,0 +1,2 @@
+Character: div
+Description: The symbol 'div' denotes division in mathematics, representing the operation of dividing one number by another.

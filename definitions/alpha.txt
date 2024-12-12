@@ -1,0 +1,2 @@
+Character: alpha
+Description: Alpha (α) is used to represent angles in trigonometry, coefficients in algebra, and is often used as a symbol for small quantities.

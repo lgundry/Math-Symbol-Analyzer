@@ -1,0 +1,2 @@
+Character: leq
+Description: The 'leq' symbol (≤) indicates that one quantity is less than or equal to another.

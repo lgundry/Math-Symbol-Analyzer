@@ -1,0 +1,2 @@
+Character: lim
+Description: The 'lim' symbol represents limits in calculus, where the value of a function approaches a specific point.

@@ -1,0 +1,2 @@
+Character: sin
+Description: Sin (sine) is a trigonometric function that represents the ratio of the opposite side to the hypotenuse in a right triangle.

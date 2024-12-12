@@ -1,0 +1,2 @@
+Character: infty
+Description: The symbol for infinity (∞) represents an unbounded quantity in mathematics.

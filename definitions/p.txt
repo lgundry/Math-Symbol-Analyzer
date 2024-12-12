@@ -1,0 +1,2 @@
+Character: p
+Description: The letter 'p' often represents probability, a prime number, or a variable in various mathematical contexts.

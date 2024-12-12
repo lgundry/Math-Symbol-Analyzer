@@ -1,0 +1,2 @@
+Character: j
+Description: The letter 'j' is commonly used in complex numbers, particularly in electrical engineering where j represents the imaginary unit.

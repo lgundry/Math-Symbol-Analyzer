@@ -1,0 +1,2 @@
+Character: phi
+Description: Phi (φ) represents the golden ratio, approximately 1.618, which appears in many areas of mathematics and art.

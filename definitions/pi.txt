@@ -1,0 +1,2 @@
+Character: pi
+Description: Pi (π) is the mathematical constant representing the ratio of the circumference of a circle to its diameter, approximately 3.14159.

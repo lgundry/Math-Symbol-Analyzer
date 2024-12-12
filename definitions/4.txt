@@ -1,0 +1,2 @@
+Character: 4
+Description: The digit four is the smallest composite number and is often used in geometry, particularly in quadrilaterals.

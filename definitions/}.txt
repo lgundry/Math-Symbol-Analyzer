@@ -1,0 +1,2 @@
+Character: }
+Description: The right curly brace is used to close a set notation and indicate the end of the set elements.

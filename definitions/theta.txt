@@ -1,0 +1,2 @@
+Character: theta
+Description: Theta (θ) is often used to represent angles in trigonometry and geometry.

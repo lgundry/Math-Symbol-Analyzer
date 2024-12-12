@@ -1,0 +1,2 @@
+Character: rightarrow
+Description: The right arrow symbol (→) represents a function or mapping from one set to another.

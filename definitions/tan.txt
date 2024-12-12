@@ -1,0 +1,2 @@
+Character: tan
+Description: Tan (tangent) is a trigonometric function that represents the ratio of the opposite side to the adjacent side of a right triangle.

@@ -1,0 +1,2 @@
+Character: y
+Description: The letter 'y' is commonly used as a variable in algebra and calculus, often representing the dependent variable in functions.

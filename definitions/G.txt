@@ -1,0 +1,2 @@
+Character: G
+Description: The letter 'G' is often used to denote constants such as the gravitational constant, or to represent groups in abstract algebra.

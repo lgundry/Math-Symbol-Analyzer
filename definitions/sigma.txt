@@ -1,0 +1,2 @@
+Character: sigma
+Description: Sigma (σ) is used to represent summation in mathematics, often used in statistics to denote standard deviation.

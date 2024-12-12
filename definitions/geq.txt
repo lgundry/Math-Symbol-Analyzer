@@ -1,0 +1,2 @@
+Character: geq
+Description: The 'geq' symbol (≥) is used to indicate that one quantity is greater than or equal to another.

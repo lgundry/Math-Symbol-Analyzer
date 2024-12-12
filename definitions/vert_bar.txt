@@ -1,0 +1,2 @@
+Character: vert_bar
+Description: The vertical bar (|) represents absolute value, or in set notation, the separator for conditions in set-builder notation.

@@ -1,0 +1,2 @@
+Character: pm
+Description: The 'pm' symbol (±) indicates plus or minus, often used to show the range of possible values for an uncertain quantity.

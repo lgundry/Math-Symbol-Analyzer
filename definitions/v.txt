@@ -1,0 +1,2 @@
+Character: v
+Description: The letter 'v' is often used to represent vectors, variables, or other quantities in mathematics.

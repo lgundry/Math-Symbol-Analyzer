@@ -1,0 +1,2 @@
+Character: X
+Description: The letter 'X' is often used as a variable to represent unknown quantities or in vector spaces and transformations.

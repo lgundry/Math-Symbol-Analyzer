@@ -1,0 +1,2 @@
+Character: (
+Description: The left parenthesis is used to group terms in mathematical expressions, particularly in operations like addition, subtraction, multiplication, and division, ensuring the correct order of operations.

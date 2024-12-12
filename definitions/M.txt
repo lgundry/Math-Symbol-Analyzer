@@ -1,0 +1,2 @@
+Character: M
+Description: The letter 'M' is often used to represent matrices, sets, or various constants in mathematics.

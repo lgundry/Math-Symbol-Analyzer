@@ -1,0 +1,2 @@
+Character: !
+Description: In mathematics, the exclamation mark denotes the factorial operation, where for a positive integer n, n! = n × (n - 1) × (n - 2) × ... × 1. Factorials are commonly used in combinatorics, algebra, and calculus.

@@ -1,0 +1,2 @@
+Character: R
+Description: The letter 'R' represents the set of real numbers, including both rational and irrational numbers.

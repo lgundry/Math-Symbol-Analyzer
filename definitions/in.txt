@@ -1,0 +1,2 @@
+Character: in
+Description: The 'in' symbol (∈) indicates that an element belongs to a set or group.

@@ -1,0 +1,2 @@
+Character: gt
+Description: The 'gt' symbol (>) indicates that one quantity is greater than another.

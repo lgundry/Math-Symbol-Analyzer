@@ -1,0 +1,2 @@
+Character: 6
+Description: The digit six is the smallest perfect number in mathematics, as it is the sum of its divisors: 1, 2, and 3.

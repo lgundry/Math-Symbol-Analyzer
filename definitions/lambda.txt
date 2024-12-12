@@ -1,0 +1,2 @@
+Character: lambda
+Description: Lambda (λ) is often used to represent eigenvalues in linear algebra or to denote functions in lambda calculus.

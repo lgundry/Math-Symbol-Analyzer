@@ -1,0 +1,2 @@
+Character: Delta
+Description: Delta (Δ) represents a change or difference in a quantity. It is commonly used in calculus, physics, and engineering.

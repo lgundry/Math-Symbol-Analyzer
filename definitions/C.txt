@@ -1,0 +1,2 @@
+Character: C
+Description: The letter 'C' commonly represents the set of complex numbers in mathematics, or it is used for constants in equations and formulas.

@@ -1,0 +1,2 @@
+Character: ldots
+Description: The 'ldots' symbol (…) represents a series or continuation of terms in mathematical notation.

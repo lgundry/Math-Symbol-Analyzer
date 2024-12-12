@@ -1,0 +1,2 @@
+Character: )
+Description: The right parenthesis is used to close a group of terms in mathematical expressions, indicating that the enclosed operations should be evaluated first according to the order of operations.

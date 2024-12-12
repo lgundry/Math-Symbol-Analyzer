@@ -1,0 +1,2 @@
+Character: ]
+Description: The right square bracket is used to close intervals or lists, matrices, or vectors, and to denote the end of array-like structures.

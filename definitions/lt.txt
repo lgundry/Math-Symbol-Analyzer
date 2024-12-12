@@ -1,0 +1,2 @@
+Character: lt
+Description: The 'lt' symbol (<) indicates that one quantity is less than another.

@@ -1,0 +1,2 @@
+Character: 5
+Description: The digit five is the third prime number, often appearing in various mathematical structures, such as pentagons and the Fibonacci sequence.

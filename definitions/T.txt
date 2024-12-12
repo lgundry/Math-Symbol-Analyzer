@@ -1,0 +1,2 @@
+Character: T
+Description: The letter 'T' is commonly used to represent time, transformations, or a particular type of matrix in linear algebra.

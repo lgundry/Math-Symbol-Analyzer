@@ -1,0 +1,2 @@
+Character: w
+Description: The letter 'w' is used as a variable in various mathematical contexts, such as representing weights in optimization problems.

@@ -1,0 +1,2 @@
+Character: cos
+Description: Cos (cosine) is a trigonometric function that represents the ratio of the adjacent side to the hypotenuse of a right triangle.

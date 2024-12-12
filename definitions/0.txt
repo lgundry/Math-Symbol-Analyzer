@@ -1,0 +1,2 @@
+Character: 0
+Description: The digit zero represents the additive identity in mathematics. It is the integer that, when added to any number, leaves the number unchanged.

@@ -1,0 +1,2 @@
+Character: A
+Description: The letter 'A' is often used to represent variables, constants, matrices, and sets in mathematics, particularly in algebra and set theory.

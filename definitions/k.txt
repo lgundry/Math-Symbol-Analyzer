@@ -1,0 +1,2 @@
+Character: k
+Description: The letter 'k' is used in mathematics to represent a constant, a variable, or an index in sequences.

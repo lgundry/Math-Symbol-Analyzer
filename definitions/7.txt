@@ -1,0 +1,2 @@
+Character: 7
+Description: The digit seven is a prime number and often appears in various number theory and combinatorics problems.

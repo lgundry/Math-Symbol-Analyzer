@@ -1,0 +1,2 @@
+Character: 2
+Description: The digit two is the smallest and first prime number in mathematics, often used in binary systems, powers of two, and various mathematical sequences.

@@ -1,0 +1,2 @@
+Character: o
+Description: The letter 'o' is used to represent a function or operation in various contexts, such as composition or small-o notation.

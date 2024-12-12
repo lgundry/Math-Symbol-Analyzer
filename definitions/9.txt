@@ -1,0 +1,2 @@
+Character: 9
+Description: The digit nine is the square of three and often appears in various mathematical patterns, such as magic squares.

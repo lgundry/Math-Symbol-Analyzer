@@ -1,0 +1,2 @@
+Character: l
+Description: The letter 'l' is used to represent lengths, linear functions, or other mathematical concepts.

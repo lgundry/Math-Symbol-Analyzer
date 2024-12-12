@@ -1,0 +1,2 @@
+Character: f
+Description: The letter 'f' is commonly used to represent functions in mathematics, where f(x) denotes the value of the function at x.

@@ -1,0 +1,2 @@
+Character: ,
+Description: The comma is used in mathematics to separate elements in a list, set, or vector, and also to separate terms in some mathematical functions.

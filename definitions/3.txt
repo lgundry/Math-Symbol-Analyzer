@@ -1,0 +1,2 @@
+Character: 3
+Description: The digit three is the second prime number and often appears in geometric shapes (triangles) and other mathematical contexts.

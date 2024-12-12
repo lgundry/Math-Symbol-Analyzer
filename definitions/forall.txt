@@ -1,0 +1,2 @@
+Character: forall
+Description: The 'forall' symbol (∀) is used in logic and set theory to indicate that a statement holds for all elements of a set.

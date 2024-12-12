@@ -1,0 +1,2 @@
+Character: mu
+Description: Mu (μ) is commonly used to represent a mean value or a coefficient in various branches of mathematics and physics.

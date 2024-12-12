@@ -1,0 +1,2 @@
+Character: z
+Description: The letter 'z' is often used to represent complex numbers or variables in mathematics.

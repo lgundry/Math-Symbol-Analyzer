@@ -1,0 +1,2 @@
+Character: beta
+Description: Beta (β) is often used to represent angles in trigonometry, as well as parameters in statistical distributions and functions.

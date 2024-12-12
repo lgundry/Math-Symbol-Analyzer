@@ -1,0 +1,2 @@
+Character: times
+Description: The times symbol (×) represents multiplication in mathematics.

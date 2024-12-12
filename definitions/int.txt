@@ -1,0 +1,2 @@
+Character: int
+Description: The 'int' symbol represents integration in calculus, where an integral is used to find areas under curves, among other applications.

@@ -1,0 +1,2 @@
+Character: 8
+Description: The digit eight is a power of two, used in binary systems, and represents the first cubic number in mathematics.

@@ -1,0 +1,2 @@
+Character: q
+Description: The letter 'q' is commonly used to represent rational numbers, variables, or specific constants in mathematics.

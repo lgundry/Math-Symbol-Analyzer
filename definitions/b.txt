@@ -1,0 +1,2 @@
+Character: b
+Description: The letter 'b' is often used as a variable or constant in algebra, representing a base or a parameter in functions and equations.

@@ -1,0 +1,2 @@
+Character: log
+Description: The 'log' function represents the logarithm, which is the inverse of exponentiation, commonly used in algebra and calculus.

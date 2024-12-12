@@ -1,0 +1,2 @@
+Character: =
+Description: The equals sign represents equality between two expressions in mathematics, indicating that both sides of an equation are equal.
