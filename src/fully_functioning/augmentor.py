@@ -1,94 +1,55 @@
 import os
-import random
-from PIL import Image, ImageEnhance
+import cv2
+import numpy as np
+from imgaug import augmenters as iaa
 
-def augment_image(image: Image.Image):
-    """ Apply multiple augmentations to a single image """
-    augmentations = [
-        rotate_image,
-        flip_image,
-        scale_image,
-        translate_image,
-        adjust_brightness
-    ]
-    
-    # Randomly apply some augmentations
-    augmented_image = image
-    for aug in random.sample(augmentations, random.randint(2, len(augmentations))):  # Apply 2 to all augmentations
-        augmented_image = aug(augmented_image)
-    
-    return augmented_image
+# Define augmentation pipeline
+seq = iaa.Sequential([
+    iaa.Crop(percent=(0, 0.1)),  # random crops
+    iaa.Sometimes(0.5, iaa.GaussianBlur(sigma=(0, 0.5))),  # Gaussian blur
+    iaa.LinearContrast((0.75, 1.5)),  # Contrast adjustment
+    iaa.AdditiveGaussianNoise(scale=(0.0, 0.05*255)),  # Add noise
+    iaa.Affine(
+        scale={"x": (0.8, 1.2), "y": (0.8, 1.2)},
+        translate_percent={"x": (-0.2, 0.2), "y": (-0.2, 0.2)},
+        rotate=(-25, 25),
+        shear=(-8, 8)
+    )
+], random_order=True)
 
-def rotate_image(image: Image.Image):
-    """ Rotate image by a random degree between -30 and 30 """
-    angle = random.randint(-30, 30)
-    return image.rotate(angle, resample=Image.BICUBIC, expand=True)
+# Root directories
+root_directory = "data/extracted_images"
+output_directory = "data/augmented_images"
 
-def flip_image(image: Image.Image):
-    """ Randomly flip the image horizontally or vertically """
-    if random.random() < 0.5:
-        image = image.transpose(Image.FLIP_LEFT_RIGHT)
-    if random.random() < 0.5:
-        image = image.transpose(Image.FLIP_TOP_BOTTOM)
-    return image
+# Ensure output directory exists
+os.makedirs(output_directory, exist_ok=True)
 
-def scale_image(image: Image.Image):
-    """ Randomly scale the image by a factor between 0.8 and 1.2 """
-    scale_factor = random.uniform(0.8, 1.2)
-    width, height = image.size
-    new_size = (int(width * scale_factor), int(height * scale_factor))
-    return image.resize(new_size, resample=Image.BICUBIC)
+# Traverse input directory
+for subdir, _, files in os.walk(root_directory):
+    relative_path = os.path.relpath(subdir, root_directory)
+    output_subdir = os.path.join(output_directory, relative_path)
+    os.makedirs(output_subdir, exist_ok=True)  # Create subdirectory in output
 
-def translate_image(image: Image.Image):
-    """ Randomly shift (translate) the image """
-    max_shift = 5  # max translation in pixels
-    x_shift = random.randint(-max_shift, max_shift)
-    y_shift = random.randint(-max_shift, max_shift)
-    return image.transform(image.size, Image.AFFINE, (1, 0, x_shift, 0, 1, y_shift))
+    for file in files:
+        input_path = os.path.join(subdir, file)
+        if file.lower().endswith(('.jpg', '.jpeg', '.png')):
+            try:
+                # Read image and preprocess
+                image = cv2.imread(input_path, cv2.IMREAD_GRAYSCALE)
+                if image is None:
+                    print(f"Warning: Skipping {input_path}, could not read image.")
+                    continue
+                
+                image_resized = cv2.resize(image, (45, 45))  # Resize to 45x45
 
-def adjust_brightness(image: Image.Image):
-    """ Randomly adjust the brightness of the image """
-    enhancer = ImageEnhance.Brightness(image)
-    factor = random.uniform(0.7, 1.3)  # Random brightness factor between 0.7 and 1.3
-    return enhancer.enhance(factor)
+                # Save original image
+                original_output_path = os.path.join(output_subdir, f"original_{file}")
+                cv2.imwrite(original_output_path, image_resized)
 
-def save_augmented_images(image: Image.Image, output_subdir: str, base_filename: str, augment_count: int):
-    """ Save the augmented images """
-    for i in range(augment_count):
-        augmented_image = augment_image(image)
-        augmented_image.save(os.path.join(output_subdir, f"{base_filename}_aug_{i+1}.jpg"))
+                # Create one augmented version
+                image_augmented = seq(image=image_resized)
+                augmented_output_path = os.path.join(output_subdir, f"augmented_{file}")
+                cv2.imwrite(augmented_output_path, image_augmented)
 
-def augment_dataset(input_dir: str, output_dir: str, augment_count: int = 5):
-    """ Augment all images in the input directory and save them to the corresponding output subdirectories """
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    
-    # Walk through each subdirectory in the input directory
-    for subdir_name in os.listdir(input_dir):
-        subdir_path = os.path.join(input_dir, subdir_name)
-        
-        # Skip non-directories
-        if not os.path.isdir(subdir_path):
-            continue
-        
-        # Create a corresponding subdirectory in the output directory
-        output_subdir = os.path.join(output_dir, subdir_name)
-        if not os.path.exists(output_subdir):
-            os.makedirs(output_subdir)
-        
-        # Process each image file in the subdirectory
-        image_files = [f for f in os.listdir(subdir_path) if f.endswith('.jpg') or f.endswith('.png')]
-        
-        for image_file in image_files:
-            image_path = os.path.join(subdir_path, image_file)
-            image = Image.open(image_path)
-            base_filename = os.path.splitext(image_file)[0]  # Remove extension for naming
-            save_augmented_images(image, output_subdir, base_filename, augment_count)
-            print(f"Augmented {image_file} from subdirectory {subdir_name} and saved {augment_count} augmented images.")
-
-if __name__ == "__main__":
-    input_dir = 'data/extracted_images'  # Replace with the path to your original dataset
-    output_dir = 'data/augmented_images'  # Replace with the path where augmented images should be saved
-    augment_count = 3  # Number of augmented versions to generate per image
-    
-    augment_dataset(input_dir, output_dir, augment_count)
+            except Exception as e:
+                print(f"Error processing {input_path}: {e}")

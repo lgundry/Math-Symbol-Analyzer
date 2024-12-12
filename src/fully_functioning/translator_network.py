@@ -111,4 +111,49 @@ class EncoderDecoderNetwork:
     def clip_gradients(self, max_norm=5.0):
         self.weights_input_hidden = np.clip(self.weights_input_hidden, -max_norm, max_norm)
         self.weights_hidden_output = np.clip(self.weights_hidden_output, -max_norm, max_norm)
+        
+    def save(self, file_path):
+        """
+        Saves the current state of the network (weights, biases, and architecture).
+        """
+        np.savez(
+            file_path,
+            input_size=self.input_size,
+            hidden_size=self.hidden_size,
+            encoded_size=self.encoded_size,
+            output_size=self.output_size,
+            weights_input_hidden=self.weights_input_hidden,
+            weights_hidden_encoded=self.weights_hidden_encoded,
+            weights_encoded_hidden=self.weights_encoded_hidden,
+            weights_hidden_output=self.weights_hidden_output,
+            bias_first_hidden=self.bias_first_hidden,
+            bias_encoded=self.bias_encoded,
+            bias_second_hidden=self.bias_second_hidden,
+            bias_output=self.bias_output,
+        )
+        print(f"Model saved to {file_path}")
+
+    @staticmethod
+    def load(file_path):
+        """
+        Loads the network state from a file and returns a new network instance.
+        """
+        data = np.load(file_path)
+        network = EncoderDecoderNetwork(
+            input_size=int(data['input_size']),
+            hidden_size=int(data['hidden_size']),
+            encoded_size=int(data['encoded_size']),
+            output_size=int(data['output_size']),
+        )
+        network.weights_input_hidden = data['weights_input_hidden']
+        network.weights_hidden_encoded = data['weights_hidden_encoded']
+        network.weights_encoded_hidden = data['weights_encoded_hidden']
+        network.weights_hidden_output = data['weights_hidden_output']
+        network.bias_first_hidden = data['bias_first_hidden']
+        network.bias_encoded = data['bias_encoded']
+        network.bias_second_hidden = data['bias_second_hidden']
+        network.bias_output = data['bias_output']
+        print(f"Model loaded from {file_path}")
+        return network
+
 

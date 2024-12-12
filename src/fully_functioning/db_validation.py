@@ -8,6 +8,7 @@ def validateDB(db, labels, path):
     Ensures each image in the database matches the original file,
     and the labels correspond to the correct directory.
     """
+    print("Validating database")
     file_index = 0
     for directory in os.listdir(path):
         directory_path = os.path.join(path, directory)
